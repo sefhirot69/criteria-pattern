@@ -4,8 +4,8 @@ DOCKER_COMPOSE = docker compose
 CONTAINER_SUFFIX = $(shell source $(ENV_FILE); echo $$CONTAINER_SUFFIX)
 PORT_HTTP_EXTERNAL = $(shell source $(ENV_FILE); echo $$PORT_HTTP_EXTERNAL)
 PORT_HTTP_INTERNAL = $(shell source $(ENV_FILE); echo $$PORT_HTTP_INTERNAL)
-CONTAINER      = webserver-${CONTAINER_SUFFIX}
-EXEC           = docker exec -t --user=root $(CONTAINER)
+CONTAINER      = webserver
+EXEC           = docker exec -t --user=root $(CONTAINER)-$(CONTAINER_SUFFIX)
 EXEC_PHP       = $(EXEC) php
 SYMFONY        = $(EXEC_PHP) bin/console
 COMPOSER       = $(EXEC) composer
@@ -17,6 +17,7 @@ export CONTAINER_SUFFIX=$(CONTAINER_SUFFIX); \
 export PORT_HTTP_EXTERNAL=$(PORT_HTTP_EXTERNAL); \
 export PORT_HTTP_INTERNAL=$(PORT_HTTP_INTERNAL);
 endef
+
 
 .DEFAULT_GOAL := deploy
 
@@ -65,10 +66,10 @@ rebuild:
 
 # 🧪 Tests
 test: create_env_file
-	docker exec -t $(CONTAINER) ./vendor/bin/phpunit --no-coverage
+	$(EXEC)  ./vendor/bin/phpunit --no-coverage
 
 test/coverage: create_env_file
-	docker exec -t $(CONTAINER) ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --order-by=random
+	$(EXEC)  ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --order-by=random
 
 # 🦝 Apache
 reload:
@@ -85,12 +86,12 @@ bash:
 # 🦊 Linter
 style: lint static-analysis
 lint:
-	$(DOCKER_COMPOSE) exec -it $(CONTAINER) ./vendor/bin/php-cs-fixer fix --diff
+	$(EXEC) ./vendor/bin/php-cs-fixer fix --diff
 	@echo "Coding Standar Fixer Executed ✅"
 
 lint-diff:
-	$(DOCKER_COMPOSE) exec -it $(CONTAINER) ./vendor/bin/php-cs-fixer fix --dry-run --diff
+	$(EXEC)  ./vendor/bin/php-cs-fixer fix --dry-run --diff
 	@echo "Coding Standar Fixer Executed ✅"
 
 static-analysis:
-	$(DOCKER_COMPOSE) exec -it $(CONTAINER) ./vendor/bin/phpstan analyse -c phpstan.neon.dist
+	$(EXEC)  ./vendor/bin/phpstan analyse -c phpstan.neon.dist
