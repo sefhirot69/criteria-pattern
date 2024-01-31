@@ -51,7 +51,7 @@ start: create_env_file
 	@echo "🚀 Deploy!!!"
 	@$(call EXPORT_ENV_VARS) $(DOCKER_COMPOSE) up -d
 stop:
-	$(DOCKER_COMPOSE) stop
+	@$(call EXPORT_ENV_VARS) $(DOCKER_COMPOSE) stop
 down:
 	$(DOCKER_COMPOSE) down
 recreate:
