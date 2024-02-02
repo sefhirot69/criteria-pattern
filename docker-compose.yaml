@@ -8,10 +8,10 @@ services:
     env_file:
       - .env
       - .docker/.env
-    container_name: 'webserver-${CONTAINER_SUFFIX}'
+    container_name: webserver-${CONTAINER_SUFFIX}
     restart: 'unless-stopped'
     ports:
-      - "${PORT_HTTP_EXTERNAL}:${PORT_HTTP_INTERNAL}"
+      - ${PORT_HTTP_EXTERNAL}:${PORT_HTTP_INTERNAL}
     volumes:
       - ./:/var/www/html
       - ${PWD}/.docker/config/webserver/php.ini:/usr/local/etc/php/php.ini
@@ -19,3 +19,20 @@ services:
     environment:
       XDEBUG_CONFIG: "client_host=host.docker.internal"
       PHP_CS_FIXER_IGNORE_ENV: 1
+
+  database:
+    image: mysql:8.3.0
+    env_file:
+      - .docker/.env
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB:-app}
+      # You should definitely change the password in production
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+      MYSQL_USER: ${MYSQL_USER:-app}
+    restart: 'unless-stopped'
+    ports:
+      - ${PORT_MYSQL_EXTERNAL:-3306}:${PORT_MYSQL_INTERNAL:-3306}
+    volumes:
+      - ./var/db/mysql/data:/var/lib/mysql
+      - .docker/config/db/mysql/init.sql:/docker-entrypoint-initdb.d

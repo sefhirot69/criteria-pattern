@@ -4,6 +4,13 @@ DOCKER_COMPOSE = docker compose
 CONTAINER_SUFFIX = $(shell source $(ENV_FILE); echo $$CONTAINER_SUFFIX)
 PORT_HTTP_EXTERNAL = $(shell source $(ENV_FILE); echo $$PORT_HTTP_EXTERNAL)
 PORT_HTTP_INTERNAL = $(shell source $(ENV_FILE); echo $$PORT_HTTP_INTERNAL)
+PORT_MYSQL_EXTERNAL = $(shell source $(ENV_FILE); echo $$PORT_MYSQL_EXTERNAL)
+PORT_MYSQL_INTERNAL = $(shell source $(ENV_FILE); echo $$PORT_MYSQL_INTERNAL)
+MYSQL_ROOT_PASSWORD= $(shell source $(ENV_FILE); echo $$MYSQL_ROOT_PASSWORD)
+MYSQL_ROOT_USER = $(shell source $(ENV_FILE); echo $$MYSQL_ROOT_USER)
+MYSQL_USER = $(shell source $(ENV_FILE); echo $$MYSQL_USER)
+MYSQL_PASSWORD = $(shell source $(ENV_FILE); echo $$MYSQL_PASSWORD)
+MYSQL_DB = $(shell source $(ENV_FILE); echo $$MYSQL_DB)
 CONTAINER      = webserver
 EXEC           = docker exec -t --user=root $(CONTAINER)-$(CONTAINER_SUFFIX)
 EXEC_PHP       = $(EXEC) php
@@ -15,7 +22,14 @@ CURRENT_UID  := $(shell id -u)
 define EXPORT_ENV_VARS
 export CONTAINER_SUFFIX=$(CONTAINER_SUFFIX); \
 export PORT_HTTP_EXTERNAL=$(PORT_HTTP_EXTERNAL); \
-export PORT_HTTP_INTERNAL=$(PORT_HTTP_INTERNAL);
+export PORT_HTTP_INTERNAL=$(PORT_HTTP_INTERNAL); \
+export PORT_MYSQL_EXTERNAL=$(PORT_MYSQL_EXTERNAL); \
+export PORT_MYSQL_INTERNAL=$(PORT_MYSQL_INTERNAL); \
+export MYSQL_ROOT_PASSWORD=$(MYSQL_ROOT_PASSWORD); \
+export MYSQL_ROOT_USER=$(MYSQL_ROOT_USER); \
+export MYSQL_USER=$(MYSQL_USER); \
+export MYSQL_PASSWORD=$(MYSQL_PASSWORD); \
+export MYSQL_DB=$(MYSQL_DB);
 endef
 
 
@@ -42,7 +56,7 @@ composer-update cu: ACTION=update $(module)
 
 composer-require cr: ACTION=require $(module)
 
-composer composer-install ci composer-update composer-require cr: create_env_file
+composer composer-install ci composer-update cu composer-require cr: create_env_file
 	$(COMPOSER) $(ACTION) \
 			--ignore-platform-reqs \
 			--no-ansi
@@ -81,7 +95,7 @@ clear:
 
 # 🐚 Shell
 bash:
-	$(DOCKER_COMPOSE) exec -it $(CONTAINER) /bin/bash
+	@$(call EXPORT_ENV_VARS) $(DOCKER_COMPOSE) exec -it $(CONTAINER) /bin/bash
 
 # 🦊 Linter
 style: lint static-analysis
@@ -95,3 +109,8 @@ lint-diff:
 
 static-analysis:
 	$(EXEC)  ./vendor/bin/phpstan analyse -c phpstan.neon.dist
+
+rm-database:
+	@$(call EXPORT_ENV_VARS) docker-compose rm -f database
+compose: stop rm-database
+	@$(call EXPORT_ENV_VARS) docker-compose up -d --force-recreate database
