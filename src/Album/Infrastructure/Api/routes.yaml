@@ -1,0 +1,4 @@
+GetAlbums:
+  path: /
+  controller: App\Album\Infrastructure\Api\GetAlbumsController
+  methods: [GET]
