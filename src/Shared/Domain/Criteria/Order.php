@@ -28,7 +28,14 @@ final readonly class Order
     public static function fromPrimitives(?string $orderBy, ?string $orderType): self
     {
         return null !== $orderBy
-            ? new self(OrderBy::fromString($orderBy), OrderType::create(OrderTypes::tryFrom($orderType)))
+            ? new self(
+                OrderBy::fromString($orderBy),
+                OrderType::create(
+                    null !== $orderType
+                        ? OrderTypes::from($orderType)
+                        : OrderTypes::NONE
+                )
+            )
             : self::none();
     }
 
