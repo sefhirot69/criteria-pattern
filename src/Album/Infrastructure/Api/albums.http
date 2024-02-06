@@ -1,1 +1,1 @@
-GET http://localhost:41/api/albums
+GET http://localhost:41/api/albums/?filters[0][field]=title&filters[0][operator]=eq&filters[0][value]=Restless and Wild

@@ -22,7 +22,7 @@ final class OrderBy extends StringValueObject
         return $this->value;
     }
 
-    public static function fromString(string $value): StringValueObject
+    public static function fromString(string $value): OrderBy
     {
         return new self($value);
     }

@@ -4,23 +4,30 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain\Criteria;
 
-final class Criteria
+final readonly class Criteria
 {
     private function __construct(
-        private readonly Filters $filters,
-        private readonly Order $order,
-        private ?int $offset,
-        private ?int $limit
+        private Filters $filters,
+        private Order $order,
     ) {
     }
 
     public static function create(
         Filters $filters,
         Order $order,
-        ?int $offset,
-        ?int $limit
     ): self {
-        return new self($filters, $order, $offset, $limit);
+        return new self($filters, $order);
+    }
+
+    public static function fromPrimitives(
+        array $filters,
+        ?string $orderBy,
+        ?string $orderType
+    ): self {
+        return new self(
+            Filters::fromPrimitives($filters),
+            Order::fromPrimitives($orderBy ?? null, $orderType ?? null),
+        );
     }
 
     public function getFilters(): Filters
@@ -33,13 +40,13 @@ final class Criteria
         return $this->order;
     }
 
-    public function getOffset(): ?int
+    public function hasOrder(): bool
     {
-        return $this->offset;
+        return !$this->getOrder()->isNone();
     }
 
-    public function getLimit(): ?int
+    public function hasFilters(): bool
     {
-        return $this->limit;
+        return $this->getFilters()->count() > 0;
     }
 }

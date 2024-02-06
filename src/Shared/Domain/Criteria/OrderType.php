@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain\Criteria;
 
-final class OrderType
+final readonly class OrderType
 {
-    private function __construct(private readonly OrderTypes $orderTypes)
+    private function __construct(private OrderTypes $orderTypes)
     {
     }
 
@@ -19,5 +19,10 @@ final class OrderType
     public function value(): string
     {
         return $this->orderTypes->value;
+    }
+
+    public function isNone(): bool
+    {
+        return $this->orderTypes->isNone();
     }
 }
