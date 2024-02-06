@@ -12,4 +12,9 @@ final class FiltersMother
     {
         return Filters::fromArray($filters);
     }
+
+    public static function empty(): Filters
+    {
+        return self::create([]);
+    }
 }

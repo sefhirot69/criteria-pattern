@@ -30,4 +30,12 @@ final class OrderMother
             OrderTypeMother::random()
         );
     }
+
+    public static function withOneSorted(string $orderBy, string $sort): Order
+    {
+        return self::create(
+            OrderBy::fromString($orderBy),
+            OrderType::fromString($sort)
+        );
+    }
 }

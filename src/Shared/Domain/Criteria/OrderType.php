@@ -16,6 +16,11 @@ final readonly class OrderType
         return new self($orderTypes);
     }
 
+    public static function fromString(string $orderType): self
+    {
+        return new self(OrderTypes::from($orderType));
+    }
+
     public function value(): string
     {
         return $this->orderTypes->value;

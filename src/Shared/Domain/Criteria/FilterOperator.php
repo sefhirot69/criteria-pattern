@@ -14,4 +14,9 @@ enum FilterOperator: string
     case LTE          = '<=';
     case CONTAINS     = 'CONTAINS';
     case NOT_CONTAINS = 'NOT_CONTAINS';
+
+    public function equalsTo(self $operator): bool
+    {
+        return $this->value === $operator->value;
+    }
 }

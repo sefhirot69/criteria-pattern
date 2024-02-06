@@ -6,9 +6,9 @@ namespace App\Shared\Domain\Criteria;
 
 enum OrderTypes: string
 {
-    case ASC  = 'asc';
-    case DESC = 'desc';
-    case NONE = 'none';
+    case ASC  = 'ASC';
+    case DESC = 'DESC';
+    case NONE = 'NONE';
 
     public function equalsTo(self $types): bool
     {

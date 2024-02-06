@@ -6,6 +6,7 @@ namespace App\Shared\Infrastructure\Converters;
 
 use App\Shared\Domain\Criteria\Criteria;
 use App\Shared\Domain\Criteria\Filter;
+use App\Shared\Domain\Criteria\FilterOperator;
 
 final class SqlCriteriaConverter
 {
@@ -24,8 +25,18 @@ final class SqlCriteriaConverter
                 if ($key > 0) {
                     $query .= ' AND ';
                 }
-                $query .= $filter->field().' '.$filter->operator()->value.' '.$filter->value();
+
+                if ($filter->operator()->equalsTo(FilterOperator::CONTAINS)) {
+                    $query .= $filter->field().' LIKE "%'.$filter->value().'%"';
+                } else {
+                    $query .= $filter->field().' '.$filter->operator()->value.' '.$filter->value();
+                }
             }
+        }
+
+        if ($criteria->hasOrder()) {
+            $order = $criteria->getOrder();
+            $query .= ' ORDER BY '.$order->getOrderBy()->value().' '.$order->getOrderType()->value();
         }
 
         return $query;

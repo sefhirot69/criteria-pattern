@@ -16,7 +16,7 @@ final class CriteriaMother
     ): Criteria {
         return Criteria::create(
             $filters,
-            $order ?: OrderMother::random()
+            $order ?: OrderMother::none()
         );
     }
 
