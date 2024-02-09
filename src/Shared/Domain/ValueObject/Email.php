@@ -6,24 +6,15 @@ namespace App\Shared\Domain\ValueObject;
 
 final class Email extends StringValueObject
 {
-    private function __construct(private readonly string $value)
+    protected function __construct(protected readonly string $value)
     {
+        parent::__construct($value);
         $this->ensureIsValidEmail();
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
     }
 
     public static function fromString(string $value): self
     {
         return new self($value);
-    }
-
-    public function value(): string
-    {
-        return $this->value;
     }
 
     private function ensureIsValidEmail(): void
