@@ -1,0 +1,33 @@
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  App\Shared\Infrastructure\Listener\SymfonyExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, method: onException }
+
+  _instanceof:
+    # all services implementing the CommandHandlerInterface
+    # will be registered on the command.bus bus
+    App\Shared\Domain\Bus\Command\CommandHandler:
+      tags:
+        - { name: messenger.message_handler, bus: command.bus }
+
+    App\Shared\Domain\Bus\Query\QueryHandler:
+      tags:
+        - { name: messenger.message_handler, bus: query.bus }
+
+    App\Shared\Infrastructure\Persistence\Repository\DoctrineRepository:
+      tags:
+        - { name: 'doctrine.repository_service' }

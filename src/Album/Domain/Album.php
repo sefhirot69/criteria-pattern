@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Album\Domain;
 
-final class Album
+use App\Shared\Domain\Aggregate\AggregateRoot;
+
+final class Album extends AggregateRoot
 {
     private function __construct(
         private readonly Title $title,
         private readonly Artist $artist,
-        private readonly ?int $id = null,
+        private readonly ?int $id = 9999,
     ) {
     }
 

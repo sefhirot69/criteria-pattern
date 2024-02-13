@@ -8,13 +8,13 @@ final class Artist
 {
     private function __construct(
         private readonly Name $name,
-        private readonly ?int $id = null,
+        private readonly ?int $id = 9999,
     ) {
     }
 
     public static function create(Name $name): self
     {
-        return new self($name, null);
+        return new self($name);
     }
 
     public function getId(): ?int

@@ -7,7 +7,7 @@ namespace App\Shared\Domain\ValueObject;
 abstract class StringValueObject
 {
     protected function __construct(
-        protected readonly string $value
+        protected string $value
     ) {
     }
 
