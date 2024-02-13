@@ -7,13 +7,18 @@ namespace App\Album\Domain;
 final class Album
 {
     private function __construct(
-        private readonly int $id,
         private readonly Title $title,
         private readonly Artist $artist,
+        private readonly ?int $id = null,
     ) {
     }
 
-    public function getId(): int
+    public static function create(Title $title, Artist $artist): self
+    {
+        return new self($title, $artist);
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
