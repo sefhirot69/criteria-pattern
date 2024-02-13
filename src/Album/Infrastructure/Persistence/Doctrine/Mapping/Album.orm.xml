@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                  http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Album\Domain\Album" table="Album">
+        <id name="id" type="integer" column="id">
+            <generator strategy="NONE"/>
+        </id>
+
+        <embedded class="App\Album\Domain\Title" use-column-prefix="false"  name="title"/>
+        <many-to-one field="artist" target-entity="App\Album\Domain\Artist" fetch="EAGER">
+            <cascade>
+                <cascade-all/>
+                <cascade-persist/>
+            </cascade>
+            <join-column name="artistId"/>
+        </many-to-one>
+    </entity>
+
+</doctrine-mapping>
