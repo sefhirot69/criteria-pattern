@@ -5,22 +5,28 @@ declare(strict_types=1);
 namespace App\Album\Domain;
 
 use App\Shared\Domain\Aggregate\AggregateRoot;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class Album extends AggregateRoot
 {
     private function __construct(
+        private readonly UuidInterface $id,
         private readonly Title $title,
         private readonly Artist $artist,
-        private readonly ?int $id = 9999,
     ) {
     }
 
     public static function create(Title $title, Artist $artist): self
     {
-        return new self($title, $artist);
+        return new self(
+            Uuid::uuid7(),
+            $title,
+            $artist
+        );
     }
 
-    public function getId(): ?int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }

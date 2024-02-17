@@ -7,6 +7,7 @@ namespace App\Album\Infrastructure\Persistence\Repository;
 use App\Album\Domain\Album;
 use App\Album\Domain\AlbumRepository;
 use App\Shared\Infrastructure\Persistence\Repository\DoctrineRepository;
+use Ramsey\Uuid\UuidInterface;
 
 class DoctrineAlbumRepository extends DoctrineRepository implements AlbumRepository
 {
@@ -15,7 +16,7 @@ class DoctrineAlbumRepository extends DoctrineRepository implements AlbumReposit
         $this->persist($album);
     }
 
-    public function findById(int $id): ?Album
+    public function findById(UuidInterface $id): ?Album
     {
         $album = $this->repository(Album::class)->find($id);
 

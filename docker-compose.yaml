@@ -29,6 +29,7 @@ services:
       # You should definitely change the password in production
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+      MYSQL_USER_ROOT: ${MYSQL_USER_ROOT:-root}
       MYSQL_USER: ${MYSQL_USER:-app}
     restart: 'unless-stopped'
     ports:
@@ -36,22 +37,3 @@ services:
     volumes:
       - ./var/db/mysql/data:/var/lib/mysql
       - .docker/config/db/mysql/init.sql:/docker-entrypoint-initdb.d
-  database_test:
-    image: mysql:8.3.0
-    env_file:
-      - .docker/.env
-    environment:
-      MYSQL_DATABASE: app
-      # You should definitely change the password in production
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
-      MYSQL_USER: ${MYSQL_USER:-app}
-    restart: 'unless-stopped'
-    ports:
-      - "3306"
-    volumes:
-      - db_data_test:/var/lib/mysql
-      - .docker/config/db/mysql/init.sql:/docker-entrypoint-initdb.d
-
-volumes:
-    db_data_test:

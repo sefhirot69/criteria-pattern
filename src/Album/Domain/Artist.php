@@ -4,20 +4,26 @@ declare(strict_types=1);
 
 namespace App\Album\Domain;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
 final class Artist
 {
     private function __construct(
+        private readonly UuidInterface $id,
         private readonly Name $name,
-        private readonly ?int $id = 9999,
     ) {
     }
 
     public static function create(Name $name): self
     {
-        return new self($name);
+        return new self(
+            Uuid::uuid7(),
+            $name,
+        );
     }
 
-    public function getId(): ?int
+    public function getId(): UuidInterface
     {
         return $this->id;
     }
